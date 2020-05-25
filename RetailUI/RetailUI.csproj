@@ -11,6 +11,7 @@
       <PackageReference Include="Rebus.RabbitMQ" Version="7.0.0" />
       <PackageReference Include="Rebus.SeriLog" Version="6.0.0" />
       <PackageReference Include="Rebus.ServiceProvider" Version="5.0.6" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
       <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     </ItemGroup>
 

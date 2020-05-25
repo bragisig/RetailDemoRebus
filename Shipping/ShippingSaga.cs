@@ -1,8 +1,8 @@
 using System.Threading.Tasks;
 using Messages.Events;
+using Microsoft.Extensions.Logging;
 using Rebus.Handlers;
 using Rebus.Sagas;
-using Serilog;
 
 namespace Shipping
 {
@@ -13,9 +13,16 @@ namespace Shipping
         IAmInitiatedBy<OrderPlacedEvent>,
         IHandleMessages<OrderBilledEvent>
     {
+        private readonly ILogger<ShippingSaga> logger;
+
+        public ShippingSaga(ILogger<ShippingSaga> logger)
+        {
+            this.logger = logger;
+        }
+
         public async Task Handle(OrderPlacedEvent message)
         {
-            Log.Logger.Information($"Shipping received OrderPlacedEvent, OrderId = {message.OrderId}");
+            logger.LogInformation($"Shipping received OrderPlacedEvent, OrderId = {message.OrderId}");
             Data.OrderId = message.OrderId;
             Data.OrderPlaced = true;
             await PossiblyPerformCompleteAction();
@@ -23,7 +30,7 @@ namespace Shipping
 
         public async Task Handle(OrderBilledEvent message)
         {
-            Log.Logger.Information($"Shipping received OrderBilledEvent, OrderId = {message.OrderId}");
+            logger.LogInformation($"Shipping received OrderBilledEvent, OrderId = {message.OrderId}");
             Data.OrderId = message.OrderId;
             Data.OrderBilled = true;
             await PossiblyPerformCompleteAction();
@@ -39,7 +46,7 @@ namespace Shipping
         {
             if (Data.OrderPlaced && Data.OrderBilled)
             {
-                Log.Logger.Information($"Order ready for shipping, OrderId = {Data.OrderId}");
+                logger.LogInformation($"Order ready for shipping, OrderId = {Data.OrderId}");
                 MarkAsComplete();
             }
             

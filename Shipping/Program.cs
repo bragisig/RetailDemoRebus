@@ -18,6 +18,7 @@ namespace Shipping
                 .CreateLogger();
             
             var services = new ServiceCollection();
+            services.AddLogging(l => l.AddSerilog(Log.Logger));
             services.AutoRegisterHandlersFromAssemblyOf<Shipping.Program>();
 
             services.AddRebus(configure => configure

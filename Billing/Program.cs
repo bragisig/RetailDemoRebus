@@ -17,6 +17,7 @@ namespace Billing
                 .CreateLogger();
             
             var services = new ServiceCollection();
+            services.AddLogging(l => l.AddSerilog(Log.Logger));
             services.AutoRegisterHandlersFromAssemblyOf<Billing.Program>();
             
             services.AddRebus(configure => configure

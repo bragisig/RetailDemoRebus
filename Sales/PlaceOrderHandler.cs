@@ -1,9 +1,9 @@
 using System.Threading.Tasks;
 using Messages.Commands;
 using Messages.Events;
+using Microsoft.Extensions.Logging;
 using Rebus.Bus;
 using Rebus.Handlers;
-using Serilog;
 
 namespace Sales
 {
@@ -11,15 +11,17 @@ namespace Sales
         IHandleMessages<PlaceOrderCommand>
     {
         private readonly IBus bus;
+        private readonly ILogger<PlaceOrderHandler> logger;
 
-        public PlaceOrderHandler(IBus bus)
+        public PlaceOrderHandler(IBus bus, ILogger<PlaceOrderHandler> logger)
         {
             this.bus = bus;
+            this.logger = logger;
         }
 
         public Task Handle(PlaceOrderCommand message)
         {
-            Log.Logger.Information($"Received PlaceOrderCommand, OrderId = {message.OrderId}");
+            logger.LogInformation($"Received PlaceOrderCommand, OrderId = {message.OrderId}");
 
             var orderPlacedEvent = new OrderPlacedEvent
             {

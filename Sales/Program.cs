@@ -1,5 +1,6 @@
 ﻿using System;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Rebus.Config;
 using Rebus.ServiceProvider;
 using Serilog;
@@ -17,8 +18,8 @@ namespace Sales
                 .CreateLogger();
             
             var services = new ServiceCollection();
+            services.AddLogging(l => l.AddSerilog(Log.Logger));
             services.AutoRegisterHandlersFromAssemblyOf<Sales.Program>();
-            
             services.AddRebus(configure => configure
                 .Logging(l => l.Serilog(Log.Logger))
                 .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RetailDemoRebus","sales")));

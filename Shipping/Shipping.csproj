@@ -7,9 +7,11 @@
 
     <ItemGroup>
       <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
+      <PackageReference Include="Microsoft.Extensions.Logging" Version="3.1.4" />
       <PackageReference Include="Rebus.RabbitMQ" Version="7.0.0" />
       <PackageReference Include="Rebus.SeriLog" Version="6.0.0" />
       <PackageReference Include="Rebus.ServiceProvider" Version="5.0.6" />
+      <PackageReference Include="Serilog.Extensions.Logging" Version="3.0.1" />
     </ItemGroup>
 
     <ItemGroup>
