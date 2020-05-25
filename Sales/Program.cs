@@ -1,8 +1,9 @@
 ﻿using System;
-using Messages.Events;
-using Rebus.Activation;
+using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
+using Rebus.ServiceProvider;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Sales
 {
@@ -10,24 +11,24 @@ namespace Sales
     {
         static void Main(string[] args)
         {
-            // we have the container in a variable, but you would probably stash it in a static field somewhere
-            var activator = new BuiltinHandlerActivator();
-            
-            activator.Register(() => new PlaceOrderHandler(activator.Bus));
-
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
                 .MinimumLevel.Debug()
                 .CreateLogger();
-
-            Configure.With(activator)
-                .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RebusRetailDemo","sales"))
+            
+            var services = new ServiceCollection();
+            services.AutoRegisterHandlersFromAssemblyOf<Sales.Program>();
+            
+            services.AddRebus(configure => configure
                 .Logging(l => l.Serilog(Log.Logger))
-                .Start();
-
-            Console.WriteLine("Press enter to quit");
-            Console.ReadLine();
-           
+                .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RetailDemoRebus","sales")));
+            
+            using (var provider = services.BuildServiceProvider())
+            {
+                provider.UseRebus();
+                
+                Console.ReadLine();
+            }
         }
     }
 }

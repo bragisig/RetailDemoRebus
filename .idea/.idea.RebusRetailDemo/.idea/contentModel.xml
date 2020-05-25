@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ContentModelStore">
-    <e p="C:\temp\RebusRetailDemo" t="IncludeFlat">
+    <e p="$PROJECT_DIR$" t="IncludeFlat">
       <e p="Billing" t="IncludeRecursive">
         <e p="Billing.csproj" t="IncludeRecursive" />
         <e p="bin" t="ExcludeRecursive" />
@@ -77,10 +77,7 @@
         <e p="ShippingSaga.cs" t="Include" />
       </e>
     </e>
-    <e p="C:\Users\bragifs\.Rider2019.3\config\consoles\db" t="IncludeRecursive" />
-    <e p="C:\Users\bragifs\.Rider2019.3\config\extensions" t="IncludeRecursive" />
-    <e p="C:\Users\bragifs\.Rider2019.3\config\scratches" t="IncludeRecursive" />
-    <e p="C:\Users\bragifs\.Rider2019.3\system\extResources" t="IncludeRecursive" />
-    <e p="C:\Users\bragifs\.Rider2019.3\system\resharper-host\local\Transient\ReSharperHost\v193\SolutionCaches\_RebusRetailDemo.1343969435.00" t="ExcludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.1/extResources" t="IncludeRecursive" />
+    <e p="$USER_HOME$/Library/Caches/JetBrains/Rider2020.1/resharper-host/local/Transient/ReSharperHost/v201/SolutionCaches/_RebusRetailDemo.-1518732120.00" t="ExcludeRecursive" />
   </component>
 </project>

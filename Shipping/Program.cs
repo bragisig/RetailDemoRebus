@@ -1,9 +1,10 @@
 ﻿using System;
-using Messages.Events;
-using Rebus.Activation;
+using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
 using Rebus.Persistence.InMem;
+using Rebus.ServiceProvider;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Shipping
 {
@@ -11,26 +12,25 @@ namespace Shipping
     {
         static void Main(string[] args)
         {
-            var activator = new BuiltinHandlerActivator();
-            
-            activator.Register(() => new ShippingSaga());
-
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
                 .MinimumLevel.Debug()
                 .CreateLogger();
-
-            Configure.With(activator)
-                .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RebusRetailDemo","shipping"))
-                .Logging(l => l.Serilog(Log.Logger))
-                .Sagas(s => s.StoreInMemory())
-                .Start();
             
-            activator.Bus.Subscribe<OrderPlacedEvent>().Wait();
-            activator.Bus.Subscribe<OrderBilledEvent>().Wait();
+            var services = new ServiceCollection();
+            services.AutoRegisterHandlersFromAssemblyOf<Shipping.Program>();
 
-            Console.WriteLine("Press enter to quit");
-            Console.ReadLine();
+            services.AddRebus(configure => configure
+                .Logging(l => l.Serilog(Log.Logger))
+                .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RetailDemoRebus", "shipping"))
+                .Sagas(s => s.StoreInMemory()));
+            
+            using (var provider = services.BuildServiceProvider())
+            {
+                provider.UseRebus();
+                
+                Console.ReadLine();
+            }
         }
     }
 }

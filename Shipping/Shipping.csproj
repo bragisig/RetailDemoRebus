@@ -6,8 +6,10 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Rebus.RabbitMQ" Version="5.2.0" />
-      <PackageReference Include="Rebus.SeriLog" Version="5.0.0" />
+      <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="3.1.4" />
+      <PackageReference Include="Rebus.RabbitMQ" Version="7.0.0" />
+      <PackageReference Include="Rebus.SeriLog" Version="6.0.0" />
+      <PackageReference Include="Rebus.ServiceProvider" Version="5.0.6" />
     </ItemGroup>
 
     <ItemGroup>

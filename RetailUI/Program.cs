@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Messages.Commands;
-using Rebus.Activation;
+using Microsoft.Extensions.DependencyInjection;
 using Rebus.Bus;
 using Rebus.Config;
-using Rebus.Logging;
 using Rebus.Routing.TypeBased;
+using Rebus.ServiceProvider;
 using Serilog;
-using Serilog.Core;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace RetailUI
 {
@@ -31,24 +31,24 @@ namespace RetailUI
         {
             Console.Title = "RebusRetailDemoUI";
 
-            var activator = new BuiltinHandlerActivator();
-            
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
                 .MinimumLevel.Debug()
                 .CreateLogger();
-
-            Configure.With(activator)
-                .Transport(t => t.UseRabbitMqAsOneWayClient("amqp://guest:guest@localhost/RebusRetailDemo"))
-                .Routing(r => r.TypeBased().Map<PlaceOrderCommand>("sales"))
+            
+            var services = new ServiceCollection();
+            services.AddRebus(configure => configure
                 .Logging(l => l.Serilog(Log.Logger))
-                .Start();
-
-            //  Configure.With(activator)
-            //      .Logging(l => l.ColoredConsole());
-
-            await RunLoop(activator.Bus)
-                .ConfigureAwait(false);
+                .Transport(t => t.UseRabbitMqAsOneWayClient("amqp://guest:guest@localhost/RetailDemoRebus"))
+                .Routing(r => r.TypeBased().Map<PlaceOrderCommand>("sales")));
+            
+            using (var provider = services.BuildServiceProvider())
+            {
+                provider.UseRebus();
+                
+                 await RunLoop(provider.GetService<IBus>())
+                     .ConfigureAwait(false);
+            }
         }
         
         static async Task RunLoop(IBus bus)

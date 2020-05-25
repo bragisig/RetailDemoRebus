@@ -1,8 +1,9 @@
 ﻿using System;
-using Messages.Events;
-using Rebus.Activation;
+using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
+using Rebus.ServiceProvider;
 using Serilog;
+using Serilog.Sinks.SystemConsole.Themes;
 
 namespace Billing
 {
@@ -10,23 +11,24 @@ namespace Billing
     {
         static void Main(string[] args)
         {
-            var activator = new BuiltinHandlerActivator();
-            activator.Register(() => new OrderPlacedHandler(activator.Bus));
-            
             Log.Logger = new LoggerConfiguration()
-                .WriteTo.Console()
+                .WriteTo.Console(theme: AnsiConsoleTheme.Code)
                 .MinimumLevel.Debug()
                 .CreateLogger();
-
-            Configure.With(activator)
-                .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RebusRetailDemo", "billing"))
-                .Logging(l => l.Serilog(Log.Logger))
-                .Start();
-
-            activator.Bus.Subscribe<OrderPlacedEvent>().Wait();
             
-            Console.WriteLine("Press enter to quit");
-            Console.ReadLine();
+            var services = new ServiceCollection();
+            services.AutoRegisterHandlersFromAssemblyOf<Billing.Program>();
+            
+            services.AddRebus(configure => configure
+                .Logging(l => l.Serilog(Log.Logger))
+                .Transport(t => t.UseRabbitMq("amqp://guest:guest@localhost/RetailDemoRebus","billing")));
+            
+            using (var provider = services.BuildServiceProvider())
+            {
+                provider.UseRebus();
+                
+                Console.ReadLine();
+            }
         }
     }
 }

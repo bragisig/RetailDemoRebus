@@ -3,7 +3,6 @@ using Messages.Commands;
 using Messages.Events;
 using Rebus.Bus;
 using Rebus.Handlers;
-using Rebus.Pipeline;
 using Serilog;
 
 namespace Sales

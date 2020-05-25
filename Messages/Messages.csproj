@@ -5,7 +5,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-      <PackageReference Include="Rebus.RabbitMQ" Version="5.2.0" />
+      <PackageReference Include="Rebus.RabbitMQ" Version="7.0.0" />
       <PackageReference Include="Serilog.Sinks.Console" Version="3.1.1" />
     </ItemGroup>
 
