@@ -1,4 +1,5 @@
 ﻿using System;
+using Messages.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
 using Rebus.Persistence.InMem;
@@ -28,7 +29,11 @@ namespace Shipping
             
             using (var provider = services.BuildServiceProvider())
             {
-                provider.UseRebus();
+                provider.UseRebus(async bus =>
+                {
+                    await bus.Subscribe<OrderPlacedEvent>();
+                    await bus.Subscribe<OrderBilledEvent>();
+                });
                 
                 Console.ReadLine();
             }

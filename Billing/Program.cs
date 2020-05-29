@@ -1,4 +1,5 @@
 ﻿using System;
+using Messages.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Rebus.Config;
 using Rebus.Retry.Simple;
@@ -28,7 +29,7 @@ namespace Billing
             
             using (var provider = services.BuildServiceProvider())
             {
-                provider.UseRebus();
+                provider.UseRebus(async bus => await bus.Subscribe<OrderPlacedEvent>());
                 
                 Console.ReadLine();
             }
