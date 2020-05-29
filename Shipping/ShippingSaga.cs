@@ -1,3 +1,5 @@
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Messages.Events;
 using Microsoft.Extensions.Logging;
@@ -13,6 +15,7 @@ namespace Shipping
         IAmInitiatedBy<OrderPlacedEvent>,
         IHandleMessages<OrderBilledEvent>
     {
+        Random rnd = new Random();
         private readonly ILogger<ShippingSaga> logger;
 
         public ShippingSaga(ILogger<ShippingSaga> logger)
@@ -23,14 +26,22 @@ namespace Shipping
         public async Task Handle(OrderPlacedEvent message)
         {
             logger.LogInformation($"Shipping received OrderPlacedEvent, OrderId = {message.OrderId}");
+
+            //Simulate processing time
+            Thread.Sleep(rnd.Next(0, 2000));
+            
             Data.OrderId = message.OrderId;
             Data.OrderPlaced = true;
-            await PossiblyPerformCompleteAction();
+            await Task.CompletedTask;
         }
 
         public async Task Handle(OrderBilledEvent message)
         {
             logger.LogInformation($"Shipping received OrderBilledEvent, OrderId = {message.OrderId}");
+            
+            //Simulate processing time
+            Thread.Sleep(rnd.Next(0, 2000));
+            
             Data.OrderId = message.OrderId;
             Data.OrderBilled = true;
             await PossiblyPerformCompleteAction();

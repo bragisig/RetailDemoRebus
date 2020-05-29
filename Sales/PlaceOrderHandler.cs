@@ -1,3 +1,5 @@
+using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Messages.Commands;
 using Messages.Events;
@@ -10,6 +12,8 @@ namespace Sales
     public class PlaceOrderHandler :
         IHandleMessages<PlaceOrderCommand>
     {
+        Random rnd = new Random();
+        
         private readonly IBus bus;
         private readonly ILogger<PlaceOrderHandler> logger;
 
@@ -23,6 +27,9 @@ namespace Sales
         {
             logger.LogInformation($"Received PlaceOrderCommand, OrderId = {message.OrderId}");
 
+            //Simulate processing time
+            Thread.Sleep(rnd.Next(0, 2000));
+            
             var orderPlacedEvent = new OrderPlacedEvent
             {
                 OrderId = message.OrderId
